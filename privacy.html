@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سياسة الخصوصية — AppGreen</title>
+  <meta name="description" content="سياسة الخصوصية الرسمية لتطبيق AppGreen على نظام Android — شفافية كاملة حول البيانات والأذونات وحقوق المستخدمين." />
+  <link rel="icon" type="image/png" href="./assets/images/app_logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body data-page="privacy">
+
+  <!-- Navigation Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-inner">
+      <a href="./index.html" class="brand-link">
+        <div class="brand-logo-wrap">
+          <img src="./assets/images/app_logo.png" alt="AppGreen Logo" />
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">AppGreen</span>
+          <span class="brand-subtitle" data-i18n="nav.brandSubtitle">الزراعة والتشجير الذكي</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="./index.html" class="nav-link" data-i18n="nav.home">الرئيسية</a>
+        <a href="./index.html#about" class="nav-link" data-i18n="nav.about">عن التطبيق</a>
+        <a href="./index.html#features" class="nav-link" data-i18n="nav.features">الميزات</a>
+        <a href="./index.html#campaigns-map" class="nav-link" data-i18n="nav.campaigns">حملات التشجير</a>
+        <a href="./index.html#download" class="nav-link" data-i18n="nav.download">تحميل APK</a>
+        <a href="./privacy.html" class="nav-link active" data-i18n="nav.privacy">سياسة الخصوصية</a>
+        <a href="./terms.html" class="nav-link" data-i18n="nav.terms">شروط الاستخدام</a>
+        <a href="./index.html#contact" class="nav-link" data-i18n="nav.contact">تواصل معنا</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="lang-switcher" role="group" aria-label="Language Switcher">
+          <button type="button" class="lang-btn active" data-lang="ar">AR</button>
+          <button type="button" class="lang-btn" data-lang="fr">FR</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme"></button>
+
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Legal Hero Banner -->
+  <section class="legal-hero">
+    <div class="container">
+      <div class="hero-badge" style="margin-inline:auto;">
+        <span class="hero-badge-dot"></span>
+        <span data-i18n="privacyPage.badge">وثيقة رسمية — الخصوصية وحماية البيانات</span>
+      </div>
+
+      <h1 class="legal-hero-title" data-i18n="privacyPage.title">سياسة الخصوصية لتطبيق AppGreen</h1>
+      <p class="legal-hero-subtitle" data-i18n="privacyPage.subtitle">
+        نوضّح بشفافية تامة البيانات والأذونات التي يتعامل معها تطبيق AppGreen فعلياً على أجهزة Android وكيفية إدارتها وحمايتها.
+      </p>
+
+      <div class="legal-updated-pill">
+        <span data-i18n="privacyPage.lastUpdatedLabel">آخر تحديث:</span>
+        <strong data-i18n="privacyPage.lastUpdatedValue">أكتوبر 2026</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Privacy Policy Content -->
+  <main class="legal-main">
+    <div class="legal-container">
+      <!-- Confirmation Items Box (Points needing final confirmation from owner) -->
+      <div class="confirmation-alert-card" id="privacyConfirmationCard">
+        <!-- Rendered dynamically from translations.js -->
+      </div>
+
+      <!-- Search & Expand/Collapse Toolbar -->
+      <div class="legal-toolbar">
+        <div class="legal-search-box">
+          <input
+            type="search"
+            id="legalSearchInput"
+            class="legal-search-input"
+            data-i18n-placeholder="privacyPage.searchPlaceholder"
+            placeholder="ابحث في بنود سياسة الخصوصية..."
+          />
+        </div>
+
+        <div class="legal-toolbar-actions">
+          <button type="button" class="btn-small-pill" id="expandAllBtn" data-i18n="privacyPage.expandAll">توسيع الكل</button>
+          <button type="button" class="btn-small-pill" id="collapseAllBtn" data-i18n="privacyPage.collapseAll">طي الكل</button>
+        </div>
+      </div>
+
+      <!-- Accordion Sections -->
+      <div class="legal-sections-list" id="legalSectionsContainer">
+        <!-- Rendered dynamically from translations.js -->
+      </div>
+
+      <div style="text-align:center;margin-top:42px;">
+        <a href="./index.html" class="btn-solid-green">
+          <span data-i18n="privacyPage.backHome">العودة إلى الصفحة الرئيسية</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:0;">
+        <span data-i18n="footer.rights">© 2026 AppGreen. جميع الحقوق محفوظة.</span>
+        <div style="display:flex;gap:18px;align-items:center;">
+          <a href="./index.html" data-i18n="nav.home">الرئيسية</a>
+          <a href="./terms.html" data-i18n="nav.terms">شروط الاستخدام</a>
+          <a href="mailto:appgreen.team@gmail.com" style="direction:ltr;">appgreen.team@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./assets/js/config.js"></script>
+  <script src="./assets/js/translations.js"></script>
+  <script src="./assets/js/main.js"></script>
+</body>
+</html>
+
