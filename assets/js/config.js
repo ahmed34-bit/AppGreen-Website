@@ -23,7 +23,7 @@ window.APPGREEN_CONFIG = {
     isVideoFileAvailable: true,
     mp4Url: "./assets/video/app.mp4",
     secondaryVideoUrl: "./assets/video/appgreen.mp4",
-    posterUrl: "",
+    posterUrl: "./assets/images/banner_drone.png",
     openingVideoDurationSeconds: 16,
     sceneDurationSeconds: 7,
     totalDurationSeconds: 37,
