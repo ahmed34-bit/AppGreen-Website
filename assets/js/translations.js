@@ -58,6 +58,8 @@ window.APPGREEN_TRANSLATIONS = {
         "تجربة بصرية سينمائية متكاملة تبدأ بالفيديو التقديمي الرسمي لتطبيق AppGreen بالصوت العالي الجودة، ثم تأخذك في جولة نحو حملات التشجير والتطوع عبر الجزائر.",
       brandOverlayTitle: "AppGreen — الزراعة والتشجير الذكي",
       brandOverlaySub: "منصة موحدة للمزارعين، المشاتل، الخدمات الفلاحية وحملات التشجير",
+      hintEnableSound: "🔊 انقر لتشغيل الصوت الكامل (HD)",
+      hintMuteSound: "🔇 كتم الصوت",
       btnUnmute: "تشغيل الصوت (HD)",
       btnMute: "كتم الصوت",
       btnPlay: "تشغيل العرض",
@@ -452,7 +454,7 @@ window.APPGREEN_TRANSLATIONS = {
       statusPendingNotice:
         "الإصدار الرسمي الأول جاهز برمجياً وسيتم تفعيل رابط التحميل المباشر فور رفع ملف APK.",
       statusReadyNotice:
-        "تنبيه مهم: هذه النسخة (v1.0.0 TEST) هي نسخة تجريبية مخصصة للاختبار والتقييم الأكاديمي وليست الإصدار التجاري النهائي.",
+        "نسخة تجريبية ",
       unknownSourcesNote:
         "ملاحظة التثبيت في Android: قد يتطلب تثبيت ملف APK السماح بـ «التثبيت من مصادر غير معروفة / خارجية» (Install unknown apps) من إعدادات المتصفح أو مدير الملفات في هاتفك.",
       btnPendingText: "بانتظار نشر نسخة Release الرسمية",
@@ -466,7 +468,7 @@ window.APPGREEN_TRANSLATIONS = {
       specSizePending: "37.57 MB",
       specAndroidLabel: "نظام التشغيل المتوافق",
       specAndroidValue: "Android 7.0 (API 24) أو أحدث",
-      specPackageLabel: "معرّف الحزمة",
+      
       stepsTitle: "خطوات تثبيت نسخة الاختبار على Android",
       steps: [
         "اضغط على زر التحميل المباشر لتنزيل ملف AppGreen-Test-v1.0.apk إلى هاتفك.",
@@ -751,6 +753,8 @@ window.APPGREEN_TRANSLATIONS = {
         "Une expérience visuelle continue qui débute par la vidéo officielle AppGreen avec son haute fidélité, suivie de la carte des campagnes de reboisement et du bénévolat en Algérie.",
       brandOverlayTitle: "AppGreen — Agriculture & Reboisement Intelligent",
       brandOverlaySub: "Plateforme unifiée pour agriculteurs, pépinières, services agricoles et campagnes vertes",
+      hintEnableSound: "🔊 Activer le son complet (HD)",
+      hintMuteSound: "🔇 Couper le son",
       btnUnmute: "Activer le son (HD)",
       btnMute: "Couper le son",
       btnPlay: "Lire la présentation",
@@ -1444,6 +1448,8 @@ window.APPGREEN_TRANSLATIONS = {
         "A seamless visual story starting with the official AppGreen presentation video in high-fidelity audio, followed by community reforestation campaigns and volunteering across Algeria.",
       brandOverlayTitle: "AppGreen — Smart Agriculture & Reforestation",
       brandOverlaySub: "Connecting farmers, nurseries, agricultural services, and green campaigns",
+      hintEnableSound: "🔊 Enable Full Audio (HD)",
+      hintMuteSound: "🔇 Mute Audio",
       btnUnmute: "Enable Audio (HD)",
       btnMute: "Mute Audio",
       btnPlay: "Play Presentation",

@@ -9,7 +9,6 @@ window.APPGREEN_CONFIG = {
   // 1. Application Identity & Metadata (extracted from app/build.gradle.kts)
   app: {
     name: "AppGreen",
-    packageName: "com.example.appgreen",
     versionName: "v1.0.0 TEST",
     versionCode: 1,
     minAndroidVersion: "Android 7.0+ (API 24)",
@@ -24,7 +23,7 @@ window.APPGREEN_CONFIG = {
     isVideoFileAvailable: true,
     mp4Url: "./assets/video/app.mp4",
     secondaryVideoUrl: "./assets/video/appgreen.mp4",
-    posterUrl: "./assets/images/banner_drone.png",
+    posterUrl: "",
     openingVideoDurationSeconds: 16,
     sceneDurationSeconds: 7,
     totalDurationSeconds: 37,

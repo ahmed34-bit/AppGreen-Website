@@ -16,7 +16,7 @@
   let cinemaElapsedMs = 0;
   let cinemaIsPlaying = true;
   let cinemaInViewport = true;
-  let cinemaIsMuted = false;
+  let cinemaIsMuted = true;
   let openingVideoClosed = false;
   let cinemaTimerId = null;
   let cinemaObserverAttached = false;
@@ -246,6 +246,8 @@
   function updateSoundControlUI() {
     const soundBtn = document.getElementById("videoSoundToggleBtn");
     const closeBtn = document.getElementById("videoCloseBtn");
+    const audioHint = document.getElementById("cinemaVideoAudioHint");
+    const audioHintText = document.getElementById("cinemaVideoAudioHintText");
     const dict = TRANSLATIONS[currentLang];
     if (soundBtn && dict && dict.videoShowcase) {
       const currVs = dict.videoShowcase;
@@ -253,6 +255,17 @@
         ${cinemaIsMuted ? ICONS.volumeMuted : ICONS.volumeOn}
         <span id="videoSoundToggleText">${escapeHtml(cinemaIsMuted ? currVs.btnUnmute : currVs.btnMute)}</span>
       `;
+    }
+    if (audioHint && dict && dict.videoShowcase) {
+      const currVs = dict.videoShowcase;
+      audioHint.classList.toggle("muted-state", cinemaIsMuted);
+      if (audioHintText) {
+        audioHintText.textContent = cinemaIsMuted
+          ? (currVs.hintEnableSound || "انقر لتشغيل الصوت HD")
+          : (currVs.hintMuteSound || "كتم الصوت");
+      }
+      const iconSpan = audioHint.querySelector(".audio-hint-icon");
+      if (iconSpan) iconSpan.textContent = cinemaIsMuted ? "🔊" : "🔇";
     }
     if (closeBtn) {
       closeBtn.style.display = currentVideoSceneIndex === 0 && !openingVideoClosed ? "inline-flex" : "none";
@@ -323,8 +336,8 @@
       const playPromise = openingVideo.play();
       if (playPromise && typeof playPromise.catch === "function") {
         playPromise.catch(() => {
-          // Browser blocked unmuted autoplay before first user gesture:
-          // Play immediately muted and automatically restore full HD audio on first user interaction
+          // If browser policy prevents unmuted autoplay on initial load,
+          // ensure immediate muted playback so video plays fluidly without showing a static image.
           openingVideo.muted = true;
           cinemaIsMuted = true;
           updateSoundControlUI();
@@ -363,9 +376,9 @@
       document.removeEventListener("keydown", unlockHandler);
       userGestureAudioBound = false;
     };
-    document.addEventListener("click", unlockHandler, { once: true });
-    document.addEventListener("touchstart", unlockHandler, { once: true });
-    document.addEventListener("keydown", unlockHandler, { once: true });
+    document.addEventListener("click", unlockHandler, { once: true, passive: true });
+    document.addEventListener("touchstart", unlockHandler, { once: true, passive: true });
+    document.addEventListener("keydown", unlockHandler, { once: true, passive: true });
   }
 
   function toggleCinemaAudio(shouldUnmute) {
@@ -420,10 +433,11 @@
             id="cinemaOpeningAmbientVideo"
             class="cinema-opening-video-ambient"
             src="${escapeHtml(videoSrc)}"
+            autoplay
             muted
+            loop
             playsinline
             preload="auto"
-            poster="${escapeHtml(posterSrc)}"
             aria-hidden="true"
           ></video>
           <div class="cinema-opening-ambient-tint" aria-hidden="true"></div>
@@ -433,10 +447,20 @@
               id="cinemaOpeningVideo"
               class="cinema-opening-video-main"
               src="${escapeHtml(videoSrc)}"
+              autoplay
+              muted
               playsinline
               preload="auto"
-              poster="${escapeHtml(posterSrc)}"
             ></video>
+            <button
+              type="button"
+              class="cinema-video-audio-hint ${cinemaIsMuted ? "muted-state" : ""}"
+              id="cinemaVideoAudioHint"
+              title="${escapeHtml(cinemaIsMuted ? (vs.hintEnableSound || "انقر لتشغيل الصوت HD") : (vs.hintMuteSound || "كتم الصوت"))}"
+            >
+              <span class="audio-hint-icon">${cinemaIsMuted ? "🔊" : "🔇"}</span>
+              <span id="cinemaVideoAudioHintText">${escapeHtml(cinemaIsMuted ? (vs.hintEnableSound || "انقر لتشغيل الصوت HD") : (vs.hintMuteSound || "كتم الصوت"))}</span>
+            </button>
           </div>
           <div class="cinema-vignette-overlay"></div>
         </div>
@@ -634,7 +658,15 @@
     const playBtn = document.getElementById("videoPlayToggleBtn");
     const replayBtn = document.getElementById("videoReplayBtn");
     const closeBtn = document.getElementById("videoCloseBtn");
+    const audioHintBtn = document.getElementById("cinemaVideoAudioHint");
     const openingVideoEl = document.getElementById("cinemaOpeningVideo");
+
+    if (audioHintBtn) {
+      audioHintBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleCinemaAudio(cinemaIsMuted);
+      });
+    }
 
     if (openingVideoEl) {
       openingVideoEl.addEventListener("click", () => {
@@ -755,10 +787,20 @@
       // and let its `ended` event close the video when it finishes.
       if (currentVideoSceneIndex === 0 && !openingVideoClosed) {
         const openingVideo = document.getElementById("cinemaOpeningVideo");
-        if (openingVideo && !openingVideo.paused && openingVideo.duration) {
-          cinemaElapsedMs = Math.min((items[0] ? items[0].endMs - 50 : 15950), openingVideo.currentTime * 1000);
-          updateCinemaActiveFrame(dict, false);
-          return;
+        if (openingVideo) {
+          if (!openingVideo.paused && openingVideo.duration) {
+            cinemaElapsedMs = Math.min((items[0] ? items[0].endMs - 50 : 15950), openingVideo.currentTime * 1000);
+            updateCinemaActiveFrame(dict, false);
+            return;
+          } else {
+            // Opening video is buffering, loading, or waiting for play in viewport.
+            // DO NOT skip the video or advance to photo scenes! Keep waiting and attempt muted playback.
+            if (cinemaIsPlaying && cinemaInViewport && openingVideo.paused) {
+              const p = openingVideo.play();
+              if (p && typeof p.catch === "function") p.catch(() => {});
+            }
+            return;
+          }
         }
       }
 
