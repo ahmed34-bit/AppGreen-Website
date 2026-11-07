@@ -37,9 +37,9 @@ window.APPGREEN_TRANSLATIONS = {
       description:
         "يجمع تطبيق AppGreen بين الفلاحين، المشاتل، الجمعيات البيئية، مقدمي الخدمات الفلاحية، المهندسين الزراعيين ومخابر التحاليل في منظومة رقمية موحدة للتسوق الفلاحي، تنظيم حملات التشجير، حجز خدمات الميدان والدرون، ومتابعة الحقول بذكاء.",
       btnDownloadPending: "صفحة التحميل (قريباً الإصدار الرسمي)",
-      btnDownloadReady: "تحميل تطبيق Android (APK)",
+      btnDownloadReady: "Télécharger AppGreen (v1.0.0 TEST)",
       btnExplore: "استكشف الميزات الفعلية",
-      metaVersion: "الإصدار الحالي: v1.0",
+      metaVersion: "الإصدار الحالي: v1.0.0 TEST",
       metaSystem: "يتطلب Android 7.0 فما فوق",
       metaCoverage: "تغطية شاملة لـ 58 ولاية",
       floatingCard1Title: "حملات التشجير الوطنية",
@@ -49,25 +49,26 @@ window.APPGREEN_TRANSLATIONS = {
     },
 
     // ========================================================================
-    // NEW SECTION 1: UNIFIED 6-SCENE CINEMATIC PRESENTATION (AR)
+    // NEW SECTION 1: UNIFIED 4-SCENE CINEMATIC PRESENTATION (AR)
     // ========================================================================
     videoShowcase: {
-      tag: "العرض السينمائي المتصل (42 ثانية)",
-      title: "قصة AppGreen: من شاشة هاتفك إلى الميدان والتشجير",
+      tag: "العرض السينمائي المتصل",
+      title: "قصة AppGreen: من المشهد الافتتاحي إلى الميدان والتشجير",
       subtitle:
-        "تجربة بصرية سينمائية متكاملة تحكي رحلة AppGreen في ربط التكنولوجيا الفلاحية وحلول الدرون بمبادرات التشجير المجتمعية عبر الجزائر.",
+        "تجربة بصرية سينمائية متكاملة تبدأ بالفيديو التقديمي الرسمي لتطبيق AppGreen بالصوت العالي الجودة، ثم تأخذك في جولة نحو حملات التشجير والتطوع عبر الجزائر.",
       brandOverlayTitle: "AppGreen — الزراعة والتشجير الذكي",
-      brandOverlaySub: "منصة موحدة للمزارعين، المشاتل، خدمات الدرون وحملات التشجير",
-      btnUnmute: "تشغيل الصوت",
+      brandOverlaySub: "منصة موحدة للمزارعين، المشاتل، الخدمات الفلاحية وحملات التشجير",
+      btnUnmute: "تشغيل الصوت (HD)",
       btnMute: "كتم الصوت",
       btnPlay: "تشغيل العرض",
       btnPause: "إيقاف مؤقت",
       btnReplay: "إعادة العرض",
-      animatedDisclosureBadge: "تجربة بصرية سينمائية متحركة • واجهات حقيقية من تطبيق AppGreen",
+      btnCloseVideo: "إغلاق الفيديو",
+      animatedDisclosureBadge: "فيديو المشهد الافتتاحي (app.mp4) بالصوت الكامل + إغلاق تلقائي عند الانتهاء",
       animatedDisclosureNote:
-        "هذا العرض عبارة عن تجربة بصرية سينمائية متحركة مبنية بطبقات الصور العالية الدقة وتحريك الكاميرا (وليس تصوير فيديو حي)، مع استعراض لقطات شاشة حقيقية 100% من واجهات تطبيق AppGreen.",
+        "يعرض المشهد الافتتاحي فيديو (app.mp4) بالصوت العالي الجودة ويُغلق تلقائيًا فور انتهائه للانتقال إلى بقية المشاهد، بينما يُعرض الفيديو الميداني الثاني (appgreen.mp4) في قسم التعريف بالتطبيق أدناه.",
       finaleSlogan: "معًا نحو جزائر أكثر خضرة",
-      finaleSub: "السوق الفلاحي • خدمات الدرون والميدان • حملات التشجير والتطوع في تطبيق واحد",
+      finaleSub: "السوق الفلاحي • الخدمات الفلاحية والميدانية • حملات التشجير والتطوع في تطبيق واحد",
       btnDiscoverAppGreen: "اكتشف AppGreen",
       btnDownloadApp: "تحميل تطبيق Android",
       mapOverlayLabel: "خريطة حملات التشجير — 58 ولاية",
@@ -79,35 +80,19 @@ window.APPGREEN_TRANSLATIONS = {
       scenes: [
         {
           id: "opening",
-          timeRange: "00:00 - 00:07",
-          badge: "المشهد 01 • افتتاحية AppGreen",
-          title: "منظومة AppGreen تنطلق من هاتفك الذكي",
-          desc: "ظهور شعار AppGreen وهاتف ذكي في المنتصف يستعرض الواجهات الحقيقية للتطبيق مع حركة تقريب سينمائية نحو الميدان.",
-          hudMetric1: "الواجهة: لقطات حقيقية من التطبيق",
-          hudMetric2: "المنصة: AppGreen Android v1.0"
-        },
-        {
-          id: "day_drone",
-          timeRange: "00:07 - 00:14",
-          badge: "المشهد 02 • الدرون نهارًا",
-          title: "درون زراعي يرش الأشجار والمحاصيل نهارًا",
-          desc: "انتقال سينمائي من شاشة الهاتف إلى الميدان حيث يقوم الدرون الزراعي برش المحاصيل والأشجار من زوايا جوية دقيقة.",
-          hudMetric1: "الوضع: رش نهاري دقيق 360°",
-          hudMetric2: "الخدمة: باقات الدرون الفلاحي"
-        },
-        {
-          id: "night_drone",
-          timeRange: "00:14 - 00:21",
-          badge: "المشهد 03 • الدرون ليلًا",
-          title: "عمليات الدرون ليلًا بإضاءة سينمائية وتقنية",
-          desc: "انتقال من النهار إلى الليل يبرز عمل الدرون الزراعي وسط المزرعة بإضاءة LED كاشفة ومسح تقني لحماية المحاصيل.",
-          hudMetric1: "الوضع: طيران ليلي + إضاءة LED",
-          hudMetric2: "المستشعر: مسح حراري وNDVI"
+          durationSec: 16,
+          timeRange: "00:00 - 00:16",
+          badge: "المشهد 01 • المشهد الافتتاحي (فيديو app.mp4)",
+          title: "المشهد الافتتاحي — تكنولوجيا الدرون والزراعة الذكية",
+          desc: "عرض فيديو المشهد الافتتاحي بالصوت العالي الجودة، ويُغلق الفيديو تلقائيًا فور انتهائه للانتقال إلى مشاهد حملات التشجير.",
+          hudMetric1: "الفيديو: app.mp4 (HD 1280×720)",
+          hudMetric2: "الصوت: مفعّل + إغلاق عند الانتهاء"
         },
         {
           id: "campaigns_map",
-          timeRange: "00:21 - 00:28",
-          badge: "المشهد 04 • حملات التشجير",
+          durationSec: 7,
+          timeRange: "00:16 - 00:23",
+          badge: "المشهد 02 • حملات التشجير",
           title: "لقطات جوية للغابات وخريطة حملات التشجير في الجزائر",
           desc: "استعراض المساحات الخضراء وظهور خريطة الجزائر التفاعلية لتوضيح مواقع مبادرات التشجير واستكشافها عبر التطبيق.",
           hudMetric1: "النطاق: خريطة مبادرات التشجير",
@@ -115,8 +100,9 @@ window.APPGREEN_TRANSLATIONS = {
         },
         {
           id: "volunteers",
-          timeRange: "00:28 - 00:35",
-          badge: "المشهد 05 • التطوع والمساهمة",
+          durationSec: 7,
+          timeRange: "00:23 - 00:30",
+          badge: "المشهد 03 • التطوع والمساهمة",
           title: "التطوع الميداني والمساهمة في توفير الشتلات",
           desc: "مشاركة المتطوعين والمزارعين في غرس الأشجار ميدانيًا، ودعم الحملات عبر التكفل بالشتلات المطلوبة بشفافية.",
           hudMetric1: "المسار 1: تطوع ميداني للغرس",
@@ -124,8 +110,9 @@ window.APPGREEN_TRANSLATIONS = {
         },
         {
           id: "finale",
-          timeRange: "00:35 - 00:42",
-          badge: "المشهد 06 • الخاتمة",
+          durationSec: 7,
+          timeRange: "00:30 - 00:37",
+          badge: "المشهد 04 • الخاتمة",
           title: "معًا نحو جزائر أكثر خضرة",
           desc: "عودة هاتف AppGreen وشعاره الرسمي مع دعوة مفتوحة لاكتشاف جميع خدمات المنصة والمشاركة في التغيير الأخضر.",
           hudMetric1: "الشعار: معًا نحو جزائر أكثر خضرة",
@@ -144,6 +131,8 @@ window.APPGREEN_TRANSLATIONS = {
         "يهدف AppGreen إلى تسهيل الوصول إلى الشتلات والبذور الموثوقة، وتوفير الخدمات الفلاحية والمخبرية والهندسية عند الطلب، وتمكين الجمعيات والمواطنين من تخطيط وتنفيذ حملات تشجير ناجحة وشفافة.",
       visionP2:
         "يدعم التطبيق التصفح كزائر (وضع الضيف) أو التسجيل بحساب مخصص حسب طبيعة نشاطك، مع واجهة ثنائية اللغة داخل التطبيق ومظهر نهاري وداكن مريح للعين.",
+      fieldVideoBadge: "فيديو ميداني • خدمات الدرون الفلاحي (appgreen.mp4)",
+      fieldVideoTitle: "رش المحاصيل والمساحات الخضراء بالدرون الزراعي",
       pillars: [
         {
           title: "شفافية ميدانية في التشجير",
@@ -454,33 +443,35 @@ window.APPGREEN_TRANSLATIONS = {
       ]
     },
     download: {
-      tag: "تحميل تطبيق Android",
-      title: "احصل على تطبيق AppGreen لهاتفك",
+      tag: "Télécharger AppGreen • نسخة الاختبار (TEST APK)",
+      title: "Télécharger AppGreen — تحميل تطبيق AppGreen",
       subtitle:
-        "يُوزَّع تطبيق AppGreen بصيغة حزمة تثبيت Android الرسمية (APK) عبر GitHub Releases لضمان تحميل آمن ومباشر.",
+        "هذه نسخة تجريبية (TEST APK) من تطبيق AppGreen لنظام Android، مخصصة للاختبار الميداني والتقييم الأكاديمي واستكشاف ميزات المنصة.",
       statusPendingBadge: "قيد التجهيز للنشر الرسمي (Pre-Release)",
-      statusReadyBadge: "متاح للتحميل المباشر (Official Release)",
+      statusReadyBadge: "نسخة اختبار وتقييم أكاديمي متاحة للتحميل • v1.0.0 TEST",
       statusPendingNotice:
-        "الإصدار الرسمي الأول (v1.0) جاهز برمجياً وسيتم تفعيل رابط التحميل المباشر فور رفع ملف APK الموقّع على GitHub Releases.",
+        "الإصدار الرسمي الأول جاهز برمجياً وسيتم تفعيل رابط التحميل المباشر فور رفع ملف APK.",
       statusReadyNotice:
-        "نسخة APK الرسمية الموقّعة متاحة الآن للتحميل المباشر من مستودع الإصدارات الرسمي.",
+        "تنبيه مهم: هذه النسخة (v1.0.0 TEST) هي نسخة تجريبية مخصصة للاختبار والتقييم الأكاديمي وليست الإصدار التجاري النهائي.",
+      unknownSourcesNote:
+        "ملاحظة التثبيت في Android: قد يتطلب تثبيت ملف APK السماح بـ «التثبيت من مصادر غير معروفة / خارجية» (Install unknown apps) من إعدادات المتصفح أو مدير الملفات في هاتفك.",
       btnPendingText: "بانتظار نشر نسخة Release الرسمية",
-      btnReadyText: "تحميل ملف Android APK الآن",
+      btnReadyText: "Télécharger AppGreen (APK)",
       btnReleasesPage: "عرض صفحة GitHub Releases",
-      specsTitle: "المواصفات التقنية للحزمة",
+      specsTitle: "المواصفات التقنية لحزمة الاختبار",
       specAppNameLabel: "اسم التطبيق",
       specVersionLabel: "رقم الإصدار",
-      specVersionValue: "الإصدار 1.0 (البناء 1)",
+      specVersionValue: "v1.0.0 TEST",
       specSizeLabel: "حجم ملف APK",
-      specSizePending: "يُحدَّد عند نشر النسخة الرسمية",
+      specSizePending: "37.57 MB",
       specAndroidLabel: "نظام التشغيل المتوافق",
       specAndroidValue: "Android 7.0 (API 24) أو أحدث",
       specPackageLabel: "معرّف الحزمة",
-      stepsTitle: "طريقة التثبيت عند صدور النسخة",
+      stepsTitle: "خطوات تثبيت نسخة الاختبار على Android",
       steps: [
-        "حمّل ملف APK الرسمي من الرابط المعتمد على هذه الصفحة بعد نشر الإصدار.",
-        "افتح الملف من إشعارات التحميل في هاتفك (واسمح بتثبيت التطبيقات من المتصفح عند الطلب).",
-        "أكمل التثبيت وافتح AppGreen للتصفح كضيف أو إنشاء حسابك الفلاحي أو البيئي."
+        "اضغط على زر التحميل المباشر لتنزيل ملف AppGreen-Test-v1.0.apk إلى هاتفك.",
+        "افتح ملف APK بعد اكتمال التنزيل، واسمح بالتثبيت من مصادر خارجية (Sources inconnues) في إعدادات Android عند ظهور التنبيه.",
+        "أكمل التثبيت وافتح تطبيق AppGreen لتجربة الميزات كزائر أو بحساب تجريبي."
       ]
     },
     contact: {
@@ -739,9 +730,9 @@ window.APPGREEN_TRANSLATIONS = {
       description:
         "AppGreen connecte les agriculteurs, pépinières, associations environnementales, prestataires de services, architectes agricoles et laboratoires d'analyses au sein d'une plateforme mobile unifiée : marché agricole, campagnes de reboisement, réservations de services, solutions drones et suivi intelligent des parcelles.",
       btnDownloadPending: "Téléchargement (Version officielle bientôt)",
-      btnDownloadReady: "Télécharger pour Android (APK)",
+      btnDownloadReady: "Télécharger AppGreen (v1.0.0 TEST)",
       btnExplore: "Explorer les fonctionnalités",
-      metaVersion: "Version actuelle : v1.0",
+      metaVersion: "Version actuelle : v1.0.0 TEST",
       metaSystem: "Android 7.0+ requis",
       metaCoverage: "Couverture des 58 wilayas",
       floatingCard1Title: "Campagnes de Reboisement",
@@ -754,22 +745,23 @@ window.APPGREEN_TRANSLATIONS = {
     // NEW SECTION 1: UNIFIED 6-SCENE CINEMATIC PRESENTATION (FR)
     // ========================================================================
     videoShowcase: {
-      tag: "Présentation Cinématographique Unifiée (42s)",
-      title: "L'histoire d'AppGreen : de votre smartphone au terrain",
+      tag: "Présentation Cinématographique Unifiée",
+      title: "L'histoire d'AppGreen : de la scène d'ouverture au terrain",
       subtitle:
-        "Une expérience visuelle continue qui raconte comment AppGreen relie les drones agricoles, la cartographie et les campagnes de reboisement citoyennes à travers l'Algérie.",
+        "Une expérience visuelle continue qui débute par la vidéo officielle AppGreen avec son haute fidélité, suivie de la carte des campagnes de reboisement et du bénévolat en Algérie.",
       brandOverlayTitle: "AppGreen — Agriculture & Reboisement Intelligent",
-      brandOverlaySub: "Plateforme unifiée pour agriculteurs, pépinières, drones et campagnes vertes",
-      btnUnmute: "Activer le son",
+      brandOverlaySub: "Plateforme unifiée pour agriculteurs, pépinières, services agricoles et campagnes vertes",
+      btnUnmute: "Activer le son (HD)",
       btnMute: "Couper le son",
       btnPlay: "Lire la présentation",
       btnPause: "Pause",
       btnReplay: "Rejouer",
-      animatedDisclosureBadge: "Expérience visuelle cinématographique animée • Interfaces réelles AppGreen",
+      btnCloseVideo: "Fermer la vidéo",
+      animatedDisclosureBadge: "Vidéo d'ouverture (app.mp4) avec son HD + Fermeture automatique à la fin",
       animatedDisclosureNote:
-        "Cette présentation est une expérience visuelle animée fluide (mouvements de caméra et calques haute définition, non un enregistrement vidéo brut), intégrant des captures d'écran 100 % réelles de l'application AppGreen.",
+        "La scène d'ouverture diffuse la vidéo (app.mp4) avec audio haute qualité et se ferme automatiquement dès la fin de la lecture, tandis que la seconde vidéo terrain (appgreen.mp4) est présentée dans la section À propos ci-dessous.",
       finaleSlogan: "Ensemble vers une Algérie plus verte",
-      finaleSub: "Marché Agricole • Drones & Services Terrain • Reboisement & Bénévolat dans une seule application",
+      finaleSub: "Marché Agricole • Services Terrain • Reboisement & Bénévolat dans une seule application",
       btnDiscoverAppGreen: "Découvrir AppGreen",
       btnDownloadApp: "Télécharger l'APK Android",
       mapOverlayLabel: "Carte des Campagnes — 58 Wilayas",
@@ -781,35 +773,19 @@ window.APPGREEN_TRANSLATIONS = {
       scenes: [
         {
           id: "opening",
-          timeRange: "00:00 - 00:07",
-          badge: "Scène 01 • Ouverture AppGreen",
-          title: "L'écosystème AppGreen prend vie sur votre smartphone",
-          desc: "Apparition du logo officiel AppGreen et d'un smartphone central dévoilant les véritables interfaces de l'application avec un zoom cinématographique.",
-          hudMetric1: "Interface : Écrans réels AppGreen",
-          hudMetric2: "Plateforme : AppGreen Android v1.0"
-        },
-        {
-          id: "day_drone",
-          timeRange: "00:07 - 00:14",
-          badge: "Scène 02 • Drone de Jour",
-          title: "Drone agricole pulvérisant arbres et cultures de jour",
-          desc: "Transition fluide du téléphone vers le terrain où le drone agricole effectue une pulvérisation de précision sur les vergers et cultures.",
-          hudMetric1: "Mode : Pulvérisation diurne 360°",
-          hudMetric2: "Service : Forfaits Drone Agricole"
-        },
-        {
-          id: "night_drone",
-          timeRange: "00:14 - 00:21",
-          badge: "Scène 03 • Drone de Nuit",
-          title: "Intervention nocturne du drone sous éclairage cinématographique",
-          desc: "Passage du jour à la nuit mettant en valeur le travail technique du drone agricole équipé de projecteurs LED et de capteurs thermiques.",
-          hudMetric1: "Mode : Vol nocturne + LED",
-          hudMetric2: "Capteur : Scan thermique & NDVI"
+          durationSec: 16,
+          timeRange: "00:00 - 00:16",
+          badge: "Scène 01 • Scène d'Ouverture (Vidéo app.mp4)",
+          title: "Scène d'Ouverture — Technologie Drone & Agriculture Intelligente",
+          desc: "Diffusion de la vidéo d'ouverture avec son haute qualité ; la vidéo se ferme automatiquement à la fin pour passer aux scènes de reboisement.",
+          hudMetric1: "Vidéo : app.mp4 (HD 1280×720)",
+          hudMetric2: "Audio : Activé + Fermeture auto"
         },
         {
           id: "campaigns_map",
-          timeRange: "00:21 - 00:28",
-          badge: "Scène 04 • Campagnes de Reboisement",
+          durationSec: 7,
+          timeRange: "00:16 - 00:23",
+          badge: "Scène 02 • Campagnes de Reboisement",
           title: "Vues aériennes des forêts et carte des campagnes en Algérie",
           desc: "Survol des massifs forestiers accompagné de la carte interactive d'Algérie illustrant la découverte des sites de reboisement.",
           hudMetric1: "Portée : Carte du reboisement",
@@ -817,8 +793,9 @@ window.APPGREEN_TRANSLATIONS = {
         },
         {
           id: "volunteers",
-          timeRange: "00:28 - 00:35",
-          badge: "Scène 05 • Bénévolat & Contribution",
+          durationSec: 7,
+          timeRange: "00:23 - 00:30",
+          badge: "Scène 03 • Bénévolat & Contribution",
           title: "Participation citoyenne et fourniture de plants",
           desc: "Mobilisation des bénévoles sur le terrain pour planter des arbres et soutien aux campagnes par la fourniture transparente de plants.",
           hudMetric1: "Voie 1 : Bénévolat terrain",
@@ -826,8 +803,9 @@ window.APPGREEN_TRANSLATIONS = {
         },
         {
           id: "finale",
-          timeRange: "00:35 - 00:42",
-          badge: "Scène 06 • Finale",
+          durationSec: 7,
+          timeRange: "00:30 - 00:37",
+          badge: "Scène 04 • Finale",
           title: "Ensemble vers une Algérie plus verte",
           desc: "Retour du smartphone et du logo officiel AppGreen avec une invitation directe à découvrir la plateforme et agir.",
           hudMetric1: "Devise : Ensemble vers une Algérie plus verte",
@@ -846,6 +824,8 @@ window.APPGREEN_TRANSLATIONS = {
         "AppGreen facilite l'accès aux plants et semences certifiés, centralise la réservation de prestations agricoles, d'analyses de sol et d'études d'aménagement, et offre aux associations des outils transparents pour organiser et suivre leurs campagnes de plantation.",
       visionP2:
         "L'application propose un mode invité pour explorer librement le catalogue, ainsi que des espaces dédiés selon le profil de chaque utilisateur, avec une interface bilingue fluide et un mode clair/sombre adaptatif.",
+      fieldVideoBadge: "Vidéo Terrain • Drone Agricole en Action (appgreen.mp4)",
+      fieldVideoTitle: "Pulvérisation de précision par drone agricole",
       pillars: [
         {
           title: "Transparence totale du reboisement",
@@ -1156,33 +1136,35 @@ window.APPGREEN_TRANSLATIONS = {
       ]
     },
     download: {
-      tag: "Téléchargement Android",
-      title: "Téléchargez AppGreen pour Android",
+      tag: "Télécharger AppGreen • Version Test Android (TEST APK)",
+      title: "Télécharger AppGreen",
       subtitle:
-        "L'application AppGreen est distribuée sous forme de fichier d'installation Android officiel (APK) via GitHub Releases pour un accès direct et vérifié.",
+        "Cette version d'essai (TEST APK) de l'application Android AppGreen est spécialement destinée aux tests fonctionnels et à l'évaluation académique du projet.",
       statusPendingBadge: "En préparation pour publication (Pre-Release)",
-      statusReadyBadge: "Disponible au téléchargement (Official Release)",
+      statusReadyBadge: "Version Test & Évaluation Académique • v1.0.0 TEST",
       statusPendingNotice:
-        "La version 1.0 est prête. Le lien de téléchargement direct sera activé sur cette page dès la publication du fichier APK signé sur GitHub Releases.",
+        "La version est prête. Le lien de téléchargement direct sera activé sur cette page dès la publication du fichier APK.",
       statusReadyNotice:
-        "La version officielle signée de l'APK AppGreen est disponible au téléchargement direct.",
+        "Avertissement : Cette version (v1.0.0 TEST) est une version d'essai dédiée aux tests et à l'évaluation académique, et non la version finale.",
+      unknownSourcesNote:
+        "Note d'installation Android : L'installation du fichier APK peut nécessiter d'autoriser l'installation d'applications depuis des sources externes / inconnues dans les paramètres Android.",
       btnPendingText: "En attente de la publication officielle (Release)",
-      btnReadyText: "Télécharger l'APK Android",
+      btnReadyText: "Télécharger AppGreen (APK)",
       btnReleasesPage: "Voir la page GitHub Releases",
-      specsTitle: "Spécifications techniques",
+      specsTitle: "Spécifications techniques du paquet",
       specAppNameLabel: "Application",
       specVersionLabel: "Version",
-      specVersionValue: "Version 1.0 (Build 1)",
+      specVersionValue: "v1.0.0 TEST",
       specSizeLabel: "Taille du fichier APK",
-      specSizePending: "Déterminée lors de la publication Release",
+      specSizePending: "37.57 MB",
       specAndroidLabel: "Système requis",
       specAndroidValue: "Android 7.0 (API 24) ou supérieur",
       specPackageLabel: "Identifiant du paquet",
-      stepsTitle: "Instructions d'installation",
+      stepsTitle: "Instructions d'installation sur Android",
       steps: [
-        "Téléchargez le fichier APK officiel depuis cette page dès sa mise en ligne sur GitHub Releases.",
-        "Ouvrez le fichier téléchargé sur votre smartphone Android (autorisez l'installation depuis votre navigateur si demandé).",
-        "Lancez AppGreen pour explorer en mode invité ou créer votre compte selon votre profil."
+        "Cliquez sur le bouton de téléchargement pour obtenir directement le fichier AppGreen-Test-v1.0.apk.",
+        "Ouvrez le fichier téléchargé sur votre appareil Android et autorisez l'installation depuis des sources externes si demandé.",
+        "Lancez AppGreen pour tester les fonctionnalités en mode invité ou avec un compte selon votre profil."
       ]
     },
     contact: {
@@ -1441,9 +1423,9 @@ window.APPGREEN_TRANSLATIONS = {
       description:
         "AppGreen connects farmers, nurseries, environmental associations, agricultural service providers, agricultural architects, and testing laboratories in a unified mobile ecosystem for buying plants, organizing tree-planting campaigns, booking field & drone services, and managing smart farms.",
       btnDownloadPending: "Download Section (Official Release Soon)",
-      btnDownloadReady: "Download for Android (APK)",
+      btnDownloadReady: "Télécharger AppGreen (v1.0.0 TEST)",
       btnExplore: "Explore Real Features",
-      metaVersion: "Current Version: v1.0",
+      metaVersion: "Current Version: v1.0.0 TEST",
       metaSystem: "Requires Android 7.0+",
       metaCoverage: "Covers all 58 Wilayas",
       floatingCard1Title: "Reforestation Campaigns",
@@ -1456,22 +1438,23 @@ window.APPGREEN_TRANSLATIONS = {
     // NEW SECTION 1: UNIFIED 6-SCENE CINEMATIC PRESENTATION (EN)
     // ========================================================================
     videoShowcase: {
-      tag: "Unified Cinematic Presentation (42s)",
-      title: "The AppGreen Story: From Your Smartphone to the Field",
+      tag: "Unified Cinematic Presentation",
+      title: "The AppGreen Story: From the Opening Scene to the Field",
       subtitle:
-        "A seamless visual story showcasing how AppGreen connects precision agricultural drones, aerial mapping, and community reforestation across Algeria.",
+        "A seamless visual story starting with the official AppGreen presentation video in high-fidelity audio, followed by community reforestation campaigns and volunteering across Algeria.",
       brandOverlayTitle: "AppGreen — Smart Agriculture & Reforestation",
-      brandOverlaySub: "Connecting farmers, nurseries, drone operations, and green campaigns",
-      btnUnmute: "Unmute Audio",
+      brandOverlaySub: "Connecting farmers, nurseries, agricultural services, and green campaigns",
+      btnUnmute: "Enable Audio (HD)",
       btnMute: "Mute Audio",
       btnPlay: "Play Presentation",
       btnPause: "Pause",
       btnReplay: "Replay Story",
-      animatedDisclosureBadge: "Animated Cinematic Visual Experience • Real AppGreen UI Screens",
+      btnCloseVideo: "Close Video",
+      animatedDisclosureBadge: "Opening Video (app.mp4) with Full Audio + Auto-Close on Completion",
       animatedDisclosureNote:
-        "This showcase is an animated cinematic visual experience crafted with high-resolution camera motion layers (rather than raw live-action footage), featuring 100% authentic screenshots from the AppGreen Android app.",
+        "The opening scene plays (app.mp4) with high-quality sound and automatically closes upon completion to transition into the story scenes, while the second field video (appgreen.mp4) is showcased in the About section below.",
       finaleSlogan: "Together Towards a Greener Algeria",
-      finaleSub: "Agricultural Market • Drone & Field Services • Reforestation & Volunteering in One App",
+      finaleSub: "Agricultural Market • Field Services • Reforestation & Volunteering in One App",
       btnDiscoverAppGreen: "Discover AppGreen",
       btnDownloadApp: "Download Android APK",
       mapOverlayLabel: "Reforestation Map — 58 Wilayas",
@@ -1483,35 +1466,19 @@ window.APPGREEN_TRANSLATIONS = {
       scenes: [
         {
           id: "opening",
-          timeRange: "00:00 - 00:07",
-          badge: "Scene 01 • AppGreen Opening",
-          title: "The AppGreen Ecosystem Starts on Your Smartphone",
-          desc: "Signature reveal of the AppGreen emblem and a central smartphone displaying real in-app screens with a cinematic camera zoom into the field.",
-          hudMetric1: "UI: Authentic AppGreen Screens",
-          hudMetric2: "Platform: AppGreen Android v1.0"
-        },
-        {
-          id: "day_drone",
-          timeRange: "00:07 - 00:14",
-          badge: "Scene 02 • Daytime Drone",
-          title: "Agricultural Drone Spraying Trees & Crops by Day",
-          desc: "Cinematic transition from the phone screen to aerial daytime views of an agricultural drone spraying orchards and crops with precision.",
-          hudMetric1: "Mode: Daytime 360° Precision Spray",
-          hudMetric2: "Service: Agricultural Drone Packages"
-        },
-        {
-          id: "night_drone",
-          timeRange: "00:14 - 00:21",
-          badge: "Scene 03 • Nighttime Drone",
-          title: "Nighttime Drone Operations with Cinematic Lighting",
-          desc: "Seamless day-to-night transition highlighting nocturnal drone operations over a farm illuminated by LED beams and thermal telemetry.",
-          hudMetric1: "Mode: Night Flight + LED Beams",
-          hudMetric2: "Sensor: Thermal & NDVI Scan"
+          durationSec: 16,
+          timeRange: "00:00 - 00:16",
+          badge: "Scene 01 • Opening Scene (app.mp4 Video)",
+          title: "Opening Scene — Drone Technology & Smart Agriculture",
+          desc: "Playing the opening scene video with high-quality audio; automatically closes when finished to transition to the reforestation scenes.",
+          hudMetric1: "Video: app.mp4 (HD 1280×720)",
+          hudMetric2: "Audio: Active + Auto-Close on End"
         },
         {
           id: "campaigns_map",
-          timeRange: "00:21 - 00:28",
-          badge: "Scene 04 • Reforestation Campaigns",
+          durationSec: 7,
+          timeRange: "00:16 - 00:23",
+          badge: "Scene 02 • Reforestation Campaigns",
           title: "Aerial Forest Sweeps & Algeria Reforestation Map",
           desc: "Sweeping aerial views of lush forests paired with an interactive Algeria map illustrating how users discover active planting campaigns.",
           hudMetric1: "Scope: National Reforestation Map",
@@ -1519,8 +1486,9 @@ window.APPGREEN_TRANSLATIONS = {
         },
         {
           id: "volunteers",
-          timeRange: "00:28 - 00:35",
-          badge: "Scene 05 • Volunteering & Contribution",
+          durationSec: 7,
+          timeRange: "00:23 - 00:30",
+          badge: "Scene 03 • Volunteering & Contribution",
           title: "Community Tree Planting & Seedling Contributions",
           desc: "Volunteers and farmers planting saplings together in the field while citizens support campaigns by providing required seedlings.",
           hudMetric1: "Pathway 1: Field Volunteering",
@@ -1528,8 +1496,9 @@ window.APPGREEN_TRANSLATIONS = {
         },
         {
           id: "finale",
-          timeRange: "00:35 - 00:42",
-          badge: "Scene 06 • Grand Finale",
+          durationSec: 7,
+          timeRange: "00:30 - 00:37",
+          badge: "Scene 04 • Grand Finale",
           title: "Together Towards a Greener Algeria",
           desc: "Return of the AppGreen smartphone and official emblem with a clear call to discover the platform and join the green movement.",
           hudMetric1: "Vision: Together Towards a Greener Algeria",
@@ -1548,6 +1517,8 @@ window.APPGREEN_TRANSLATIONS = {
         "AppGreen streamlines access to certified seedlings and seeds, centralizes on-demand agricultural, laboratory, and landscape design services, and empowers associations and citizens to plan and track transparent reforestation campaigns.",
       visionP2:
         "Users can explore the platform immediately via Guest Mode or register a dedicated role-based account, enjoying a responsive bilingual in-app interface with adaptive Light and Dark themes.",
+      fieldVideoBadge: "Field Video • Agricultural Drone in Action (appgreen.mp4)",
+      fieldVideoTitle: "Precision Crop Spraying by Agricultural Drone",
       pillars: [
         {
           title: "Transparent Reforestation Tracking",
@@ -1858,33 +1829,35 @@ window.APPGREEN_TRANSLATIONS = {
       ]
     },
     download: {
-      tag: "Android APK Download",
-      title: "Get AppGreen for Your Android Device",
+      tag: "Télécharger AppGreen • Android Test Build (TEST APK)",
+      title: "Télécharger AppGreen — Download AppGreen",
       subtitle:
-        "AppGreen is distributed as an official Android package (APK) via GitHub Releases to provide a clean, direct, and verifiable installation.",
+        "This is a testing version (TEST APK) of the AppGreen Android application, designed specifically for functional testing and academic evaluation.",
       statusPendingBadge: "Preparing Official Release (Pre-Release)",
-      statusReadyBadge: "Available for Direct Download (Official Release)",
+      statusReadyBadge: "Test & Academic Evaluation Build • v1.0.0 TEST",
       statusPendingNotice:
-        "Version 1.0 is built and verified. The direct download button will be activated on this page as soon as the official signed Release APK is published on GitHub Releases.",
+        "Version 1.0 is built and verified. The direct download button will be activated on this page as soon as the APK is published.",
       statusReadyNotice:
-        "The official signed AppGreen APK is now live and ready for direct download.",
+        "Important Notice: This build (v1.0.0 TEST) is a testing release intended for academic evaluation and testing, not the final production release.",
+      unknownSourcesNote:
+        "Android Installation Note: Installing an APK file directly may require enabling 'Install unknown apps' (external sources) for your browser or file manager in Android Settings.",
       btnPendingText: "Pending Official GitHub Release Publication",
-      btnReadyText: "Download Android APK Now",
+      btnReadyText: "Télécharger AppGreen (APK)",
       btnReleasesPage: "View GitHub Releases Page",
-      specsTitle: "Package Technical Specifications",
+      specsTitle: "Test Package Technical Specifications",
       specAppNameLabel: "Application Name",
       specVersionLabel: "Version Number",
-      specVersionValue: "Version 1.0 (Build 1)",
+      specVersionValue: "v1.0.0 TEST",
       specSizeLabel: "APK File Size",
-      specSizePending: "Determined upon official Release build",
+      specSizePending: "37.57 MB",
       specAndroidLabel: "Minimum Android OS",
       specAndroidValue: "Android 7.0 (API 24) or higher",
       specPackageLabel: "Application ID",
-      stepsTitle: "How to Install Upon Release",
+      stepsTitle: "How to Install on Android",
       steps: [
-        "Download the official APK file from this section once the release is published on GitHub Releases.",
-        "Open the downloaded APK file on your Android device (allow installation from your browser if prompted).",
-        "Launch AppGreen to browse in Guest Mode or register your agricultural or environmental account."
+        "Click the download button to directly download AppGreen-Test-v1.0.apk to your Android device.",
+        "Open the downloaded APK file and allow installation from external/unknown sources in Android Settings if prompted.",
+        "Launch AppGreen to explore in Guest Mode or test role-based accounts."
       ]
     },
     contact: {

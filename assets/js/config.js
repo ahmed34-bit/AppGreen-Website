@@ -10,27 +10,28 @@ window.APPGREEN_CONFIG = {
   app: {
     name: "AppGreen",
     packageName: "com.example.appgreen",
-    versionName: "1.0",
+    versionName: "v1.0.0 TEST",
     versionCode: 1,
     minAndroidVersion: "Android 7.0+ (API 24)",
     targetSdk: 37,
-    // Set the exact APK size (e.g. "38.5 MB") once the signed Release APK is generated.
-    // Leave as null before the official release is built so the UI shows "TBD upon release".
-    apkFileSize: null,
-    lastUpdated: "2026-10"
+    // Fallback APK size ("37.57 MB" = 39,399,210 bytes); also detected automatically via HTTP HEAD in main.js
+    apkFileSize: "37.57 MB",
+    lastUpdated: "2026-11"
   },
 
-  // 2. Unified Cinematic Presentation Configuration (42s continuous 6-scene story)
+  // 2. Unified 4-Scene Cinematic Presentation (Opening Video app.mp4 + Campaigns + Volunteering + Finale)
   promoVideo: {
-    isVideoFileAvailable: false,
-    mp4Url: "./assets/video/appgreen-promo.mp4",
+    isVideoFileAvailable: true,
+    mp4Url: "./assets/video/app.mp4",
+    secondaryVideoUrl: "./assets/video/appgreen.mp4",
     posterUrl: "./assets/images/banner_drone.png",
-    totalDurationSeconds: 42,
+    openingVideoDurationSeconds: 16,
     sceneDurationSeconds: 7,
+    totalDurationSeconds: 37,
     assets: {
       logo: "./assets/images/app_logo.png",
-      dayDrone: "./assets/images/banner_drone.png",
-      nightDrone: "./assets/images/cinema/scene_night_drone.jpg",
+      openingVideo: "./assets/video/app.mp4",
+      secondaryVideo: "./assets/video/appgreen.mp4",
       aerialForest: "./assets/images/cinema/scene_aerial_forest.jpg",
       volunteersPlanting: "./assets/images/cinema/scene_volunteers_planting.jpg",
       phoneScreenCampaigns: "./assets/images/screenshots/screen_campaigns_list.png",
@@ -50,15 +51,14 @@ window.APPGREEN_CONFIG = {
     mapZoom: 6
   },
 
-  // 4. GitHub Releases & APK Download Settings
-  // IMPORTANT:
-  // - Keep `isReleasePublished: false` until an official Release APK is actually uploaded.
-  // - Once uploaded to GitHub Releases, set `isReleasePublished: true` and paste the
-  //   direct `.apk` asset URL into `apkDownloadUrl`.
+  // 4. Android Test APK Download Settings (Hosted on GitHub Pages)
   download: {
-    isReleasePublished: false,
-    apkDownloadUrl: "", // Example when published: "https://github.com/<USERNAME>/<REPO>/releases/download/v1.0/AppGreen-v1.0.apk"
-    releasesPageUrl: "" // Example when published: "https://github.com/<USERNAME>/<REPO>/releases/latest"
+    isReleasePublished: true,
+    isTestBuild: true,
+    versionLabel: "v1.0.0 TEST",
+    apkFileName: "AppGreen-Test-v1.0.apk",
+    apkDownloadUrl: "downloads/AppGreen-Test-v1.0.apk",
+    releasesPageUrl: ""
   },
 
   // 5. Internal Page Links (Relative paths for full GitHub Pages compatibility)

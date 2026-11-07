@@ -726,6 +726,85 @@ ul {
   margin-bottom: 16px;
 }
 
+/* Secondary Video Showcase Card in About Section (assets/video/appgreen.mp4) */
+.about-field-video-card {
+  margin-top: 18px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1.5px solid rgba(134, 239, 172, 0.38);
+  background: #04130A;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+}
+
+.about-field-video-stage {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #04130A;
+}
+
+.about-field-video-ambient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(22px) brightness(0.45) saturate(1.15);
+  transform: scale(1.08);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.about-field-video-main {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  cursor: pointer;
+}
+
+.about-field-video-bar {
+  position: absolute;
+  bottom: 10px;
+  inset-inline: 10px;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(5, 22, 12, 0.86);
+  border: 1px solid rgba(134, 239, 172, 0.34);
+  backdrop-filter: blur(10px);
+}
+
+.about-field-video-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-field-video-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #86EFAC;
+}
+
+.about-field-video-title {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
 .about-pillars-list {
   display: flex;
   flex-direction: column;
@@ -1160,22 +1239,31 @@ ul {
   line-height: 1.65;
 }
 
+.download-notice-box.test-alert {
+  background: rgba(250, 204, 21, 0.12);
+  border: 1px solid rgba(253, 224, 71, 0.42);
+  color: #FEF08A;
+  font-weight: 600;
+}
+
 .download-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .btn-apk-download {
-  padding: 15px 28px;
+  padding: 15px 26px;
   border-radius: var(--radius-pill);
   font-weight: 800;
   font-size: 0.98rem;
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 12px;
-  transition: var(--transition-fast);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, background 0.28s ease;
 }
 
 .btn-apk-download.ready {
@@ -1185,8 +1273,53 @@ ul {
 }
 
 .btn-apk-download.ready:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 34px rgba(34, 197, 94, 0.48);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 18px 38px rgba(34, 197, 94, 0.52);
+}
+
+.btn-apk-download.ready:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.btn-apk-download.ready .android-btn-icon {
+  transition: transform 0.28s ease;
+  flex-shrink: 0;
+}
+
+.btn-apk-download.ready:hover .android-btn-icon {
+  transform: translateY(-2px) rotate(-6deg);
+}
+
+.apk-btn-meta-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(5, 41, 18, 0.16);
+  border: 1px solid rgba(5, 41, 18, 0.24);
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #04220E;
+  direction: ltr;
+  display: inline-block;
+}
+
+.download-unknown-sources-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  border-radius: var(--radius-md);
+  background: rgba(8, 36, 19, 0.62);
+  border: 1px solid rgba(134, 239, 172, 0.28);
+  font-size: 0.85rem;
+  color: rgba(236, 253, 245, 0.9);
+  line-height: 1.6;
+}
+
+.download-unknown-sources-box svg {
+  flex-shrink: 0;
+  color: #86EFAC;
+  margin-top: 2px;
 }
 
 .btn-apk-download.disabled {
@@ -1822,13 +1955,64 @@ ul {
 .video-stage-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  min-height: 460px;
+  height: clamp(540px, 80vh, 780px);
+  min-height: 520px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: radial-gradient(circle at 50% 42%, #134626 0%, #05160C 78%);
   border: 1px solid rgba(134, 239, 172, 0.24);
   user-select: none;
+}
+
+/* Scene 1: Opening Video (app.mp4 — 1280x720 HD) — Multi-Screen Fit */
+.cinema-opening-video-scene {
+  background: #04130A;
+}
+
+.cinema-opening-video-ambient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(26px) brightness(0.45);
+  transform: scale(1.08);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cinema-opening-ambient-tint {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 30%, rgba(4, 19, 10, 0.65) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cinema-opening-video-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.cinema-opening-video-main {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 /* Continuous 6-Scene Layers Stack */
@@ -2363,7 +2547,7 @@ ul {
 
 .cinema-chapters-strip {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 
@@ -2920,6 +3104,15 @@ ul {
     min-height: 490px;
   }
 
+  .video-stage-frame {
+    height: 580px;
+    min-height: 520px;
+  }
+
+  .cinema-chapters-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .roles-grid,
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2983,8 +3176,8 @@ ul {
   }
 
   .video-stage-frame {
-    aspect-ratio: auto;
-    min-height: 540px;
+    height: min(78vh, 620px);
+    min-height: 520px;
   }
 
   .algeria-map-canvas {
@@ -3011,6 +3204,23 @@ ul {
 
 @media (max-width: 480px) {
   .brand-subtitle {
+    display: none;
+  }
+
+  .video-theater-card {
+    padding: 10px;
+  }
+
+  .video-stage-frame {
+    height: min(76vh, 580px);
+    min-height: 480px;
+  }
+
+  .cinema-chapters-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .video-active-scene-caption {
     display: none;
   }
 

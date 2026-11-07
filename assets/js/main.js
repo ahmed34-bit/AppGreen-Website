@@ -16,11 +16,12 @@
   let cinemaElapsedMs = 0;
   let cinemaIsPlaying = true;
   let cinemaInViewport = true;
-  let cinemaIsMuted = true;
+  let cinemaIsMuted = false;
+  let openingVideoClosed = false;
   let cinemaTimerId = null;
   let cinemaObserverAttached = false;
-  let audioCtx = null;
-  let audioMasterGain = null;
+  let userGestureAudioBound = false;
+  let aboutVideoBound = false;
   let activeCampaignId = "bainem_doc";
   let leafletMapInstance = null;
   let leafletMarkersMap = {};
@@ -190,7 +191,7 @@
     if (isReady) {
       heroBtnText.textContent = dict.hero.btnDownloadReady;
       heroBtn.setAttribute("href", CONFIG.download.apkDownloadUrl);
-      heroBtn.setAttribute("download", "");
+      heroBtn.setAttribute("download", CONFIG.download.apkFileName || "AppGreen-Test-v1.0.apk");
     } else {
       heroBtnText.textContent = dict.hero.btnDownloadPending;
       heroBtn.setAttribute("href", "#download");
@@ -205,43 +206,180 @@
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   }
 
+  function getCinemaSceneTimings(scenes) {
+    const defaultDurationSec = (CONFIG.promoVideo && CONFIG.promoVideo.sceneDurationSeconds) || 7;
+    const openingDurationSec = (CONFIG.promoVideo && CONFIG.promoVideo.openingVideoDurationSeconds) || 16;
+    let cursorMs = 0;
+    const items = (Array.isArray(scenes) ? scenes : []).map((scene, idx) => {
+      const sec = scene.durationSec || (idx === 0 ? openingDurationSec : defaultDurationSec);
+      const durationMs = sec * 1000;
+      const item = {
+        index: idx,
+        startMs: cursorMs,
+        endMs: cursorMs + durationMs,
+        durationMs,
+        scene
+      };
+      cursorMs += durationMs;
+      return item;
+    });
+    const totalDurationMs = cursorMs || 37000;
+    return { items, totalDurationMs };
+  }
+
+  function getActiveSceneFromElapsed(scenes, elapsedMs) {
+    const { items, totalDurationMs } = getCinemaSceneTimings(scenes);
+    if (items.length === 0) {
+      return { activeIdx: 0, activeScene: {}, totalDurationMs: 37000, items: [] };
+    }
+    const clampedMs = Math.max(0, Math.min(totalDurationMs - 1, elapsedMs));
+    const found = items.find((it) => clampedMs >= it.startMs && clampedMs < it.endMs) || items[0];
+    return {
+      activeIdx: found.index,
+      activeScene: found.scene,
+      activeItem: found,
+      totalDurationMs,
+      items
+    };
+  }
+
+  function updateSoundControlUI() {
+    const soundBtn = document.getElementById("videoSoundToggleBtn");
+    const closeBtn = document.getElementById("videoCloseBtn");
+    const dict = TRANSLATIONS[currentLang];
+    if (soundBtn && dict && dict.videoShowcase) {
+      const currVs = dict.videoShowcase;
+      soundBtn.innerHTML = `
+        ${cinemaIsMuted ? ICONS.volumeMuted : ICONS.volumeOn}
+        <span id="videoSoundToggleText">${escapeHtml(cinemaIsMuted ? currVs.btnUnmute : currVs.btnMute)}</span>
+      `;
+    }
+    if (closeBtn) {
+      closeBtn.style.display = currentVideoSceneIndex === 0 && !openingVideoClosed ? "inline-flex" : "none";
+    }
+  }
+
+  function closeOpeningVideoOnEnd() {
+    const openingVideo = document.getElementById("cinemaOpeningVideo");
+    const ambientVideo = document.getElementById("cinemaOpeningAmbientVideo");
+    if (openingVideo) {
+      openingVideo.pause();
+      openingVideo.muted = true;
+    }
+    if (ambientVideo) {
+      ambientVideo.pause();
+    }
+
+    openingVideoClosed = true;
+    const dict = TRANSLATIONS[currentLang];
+    if (!dict || !dict.videoShowcase) return;
+    const scenes = dict.videoShowcase.scenes || [];
+    const { items } = getCinemaSceneTimings(scenes);
+    const nextSceneItem = items[1] || items[0];
+    cinemaElapsedMs = nextSceneItem ? nextSceneItem.startMs : 16000;
+    currentVideoSceneIndex = nextSceneItem ? nextSceneItem.index : 1;
+    updateCinemaActiveFrame(dict, false);
+    updateSoundControlUI();
+  }
+
+  function syncOpeningVideoPlayback(resetToStart) {
+    const openingVideo = document.getElementById("cinemaOpeningVideo");
+    const ambientVideo = document.getElementById("cinemaOpeningAmbientVideo");
+    if (!openingVideo) return;
+
+    if (resetToStart) {
+      try {
+        openingVideo.currentTime = 0;
+        if (ambientVideo) ambientVideo.currentTime = 0;
+      } catch (e) {
+        // Ignore seek errors before metadata is loaded
+      }
+    }
+
+    const shouldPlay =
+      currentVideoSceneIndex === 0 && !openingVideoClosed && cinemaIsPlaying && cinemaInViewport;
+
+    if (!shouldPlay) {
+      if (!openingVideo.paused) openingVideo.pause();
+      if (ambientVideo && !ambientVideo.paused) ambientVideo.pause();
+      updateSoundControlUI();
+      return;
+    }
+
+    openingVideo.volume = 1.0;
+    openingVideo.muted = cinemaIsMuted;
+
+    if (ambientVideo) {
+      ambientVideo.muted = true;
+      if (ambientVideo.paused) {
+        const ambPromise = ambientVideo.play();
+        if (ambPromise && typeof ambPromise.catch === "function") {
+          ambPromise.catch(() => {});
+        }
+      }
+    }
+
+    if (openingVideo.paused) {
+      const playPromise = openingVideo.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          // Browser blocked unmuted autoplay before first user gesture:
+          // Play immediately muted and automatically restore full HD audio on first user interaction
+          openingVideo.muted = true;
+          cinemaIsMuted = true;
+          updateSoundControlUI();
+          const retryMuted = openingVideo.play();
+          if (retryMuted && typeof retryMuted.catch === "function") {
+            retryMuted.catch(() => {});
+          }
+          bindFirstGestureAudioUnlock();
+        });
+      }
+    }
+    updateSoundControlUI();
+  }
+
+  function bindFirstGestureAudioUnlock() {
+    if (userGestureAudioBound) return;
+    userGestureAudioBound = true;
+    const unlockHandler = () => {
+      const openingVideo = document.getElementById("cinemaOpeningVideo");
+      if (
+        openingVideo &&
+        currentVideoSceneIndex === 0 &&
+        !openingVideoClosed &&
+        cinemaIsPlaying &&
+        cinemaInViewport
+      ) {
+        cinemaIsMuted = false;
+        openingVideo.muted = false;
+        openingVideo.volume = 1.0;
+        const p = openingVideo.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+        updateSoundControlUI();
+      }
+      document.removeEventListener("click", unlockHandler);
+      document.removeEventListener("touchstart", unlockHandler);
+      document.removeEventListener("keydown", unlockHandler);
+      userGestureAudioBound = false;
+    };
+    document.addEventListener("click", unlockHandler, { once: true });
+    document.addEventListener("touchstart", unlockHandler, { once: true });
+    document.addEventListener("keydown", unlockHandler, { once: true });
+  }
+
   function toggleCinemaAudio(shouldUnmute) {
     cinemaIsMuted = !shouldUnmute;
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return;
-
-    if (!cinemaIsMuted) {
-      if (!audioCtx) {
-        try {
-          audioCtx = new AudioContextClass();
-          audioMasterGain = audioCtx.createGain();
-          audioMasterGain.gain.setValueAtTime(0.035, audioCtx.currentTime);
-          audioMasterGain.connect(audioCtx.destination);
-
-          // Gentle nature-inspired harmonic pad (A3 - C#4 - E4)
-          [220, 277.18, 329.63].forEach((freq, idx) => {
-            const osc = audioCtx.createOscillator();
-            const filter = audioCtx.createBiquadFilter();
-            osc.type = idx === 0 ? "sine" : "triangle";
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            filter.type = "lowpass";
-            filter.frequency.setValueAtTime(620, audioCtx.currentTime);
-            osc.connect(filter);
-            filter.connect(audioMasterGain);
-            osc.start();
-          });
-        } catch (e) {
-          // Ignore if browser blocks audio context creation
-        }
-      } else if (audioCtx.state === "suspended") {
-        audioCtx.resume().catch(() => {});
+    const openingVideo = document.getElementById("cinemaOpeningVideo");
+    if (openingVideo) {
+      openingVideo.volume = 1.0;
+      openingVideo.muted = cinemaIsMuted;
+      if (!cinemaIsMuted && currentVideoSceneIndex === 0 && !openingVideoClosed && cinemaIsPlaying) {
+        const p = openingVideo.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
       }
-      if (audioMasterGain && audioCtx) {
-        audioMasterGain.gain.setTargetAtTime(0.035, audioCtx.currentTime, 0.25);
-      }
-    } else if (audioMasterGain && audioCtx) {
-      audioMasterGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.15);
     }
+    updateSoundControlUI();
   }
 
   function renderVideoShowcaseSection(dict) {
@@ -252,14 +390,16 @@
 
     const vs = dict.videoShowcase;
     const scenes = Array.isArray(vs.scenes) ? vs.scenes : [];
-    const sceneCount = scenes.length || 6;
-    const sceneDurationMs = ((CONFIG.promoVideo && CONFIG.promoVideo.sceneDurationSeconds) || 7) * 1000;
-    const totalDurationMs = sceneCount * sceneDurationMs;
+    const { activeIdx, activeScene, totalDurationMs, items } = getActiveSceneFromElapsed(scenes, cinemaElapsedMs);
+    currentVideoSceneIndex = activeIdx;
+    stageContainer.setAttribute("data-active-scene", activeScene.id || "opening");
 
+    const videoSrc = (CONFIG.promoVideo && CONFIG.promoVideo.mp4Url) || "./assets/video/app.mp4";
+    const posterSrc = (CONFIG.promoVideo && CONFIG.promoVideo.posterUrl) || "./assets/images/banner_drone.png";
     const assets = (CONFIG.promoVideo && CONFIG.promoVideo.assets) || {
       logo: "./assets/images/app_logo.png",
-      dayDrone: "./assets/images/banner_drone.png",
-      nightDrone: "./assets/images/cinema/scene_night_drone.jpg",
+      openingVideo: "./assets/video/app.mp4",
+      secondaryVideo: "./assets/video/appgreen.mp4",
       aerialForest: "./assets/images/cinema/scene_aerial_forest.jpg",
       volunteersPlanting: "./assets/images/cinema/scene_volunteers_planting.jpg",
       phoneScreenCampaigns: "./assets/images/screenshots/screen_campaigns_list.png",
@@ -268,60 +408,41 @@
       phoneScreenCampaignDetail: "./assets/images/screenshots/screen_campaign_detail1.png"
     };
 
-    const activeIdx = Math.min(sceneCount - 1, Math.floor(cinemaElapsedMs / sceneDurationMs));
-    currentVideoSceneIndex = activeIdx;
-    const activeScene = scenes[activeIdx] || scenes[0] || {};
-    stageContainer.setAttribute("data-active-scene", activeScene.id || "opening");
-
     const disclosureBadge = vs.animatedDisclosureBadge || vs.statusPlaceholderBadge || "";
     const disclosureNote = vs.animatedDisclosureNote || vs.statusPlaceholderNote || "";
 
-    // Build the 6 continuous scene layers inside the 16:9 cinema viewport
+    // Build the 4 continuous scene layers inside the responsive cinema viewport
     stageContainer.innerHTML = `
       <div class="cinema-scenes-viewport">
-        <!-- SCENE 1: AppGreen Opening (Dark Green + Emblem + 3D Smartphone with Real App Screens) -->
-        <div class="cinema-scene-layer ${activeIdx === 0 ? "active" : ""}" data-scene-layer="0">
-          <div class="cinema-opening-bg"></div>
-          <div class="cinema-grid-mesh"></div>
-          <div class="cinema-center-stage">
-            <div class="cinema-brand-column">
-              <div class="cinema-logo-badge">
-                <img src="${escapeHtml(assets.logo)}" alt="AppGreen Logo" />
-                <div>
-                  <div class="cinema-logo-badge-name">AppGreen</div>
-                  <div class="cinema-logo-badge-sub">${escapeHtml(vs.brandOverlayTitle)}</div>
-                </div>
-              </div>
-              <h3 class="cinema-stage-headline">${escapeHtml(scenes[0] ? scenes[0].title : "")}</h3>
-              <p class="cinema-stage-subtext">${escapeHtml(scenes[0] ? scenes[0].desc : "")}</p>
-            </div>
+        <!-- SCENE 1: Opening Video (assets/video/app.mp4) with Sound & Auto-Close on End -->
+        <div class="cinema-scene-layer cinema-opening-video-scene ${activeIdx === 0 && !openingVideoClosed ? "active" : ""}" data-scene-layer="0">
+          <video
+            id="cinemaOpeningAmbientVideo"
+            class="cinema-opening-video-ambient"
+            src="${escapeHtml(videoSrc)}"
+            muted
+            playsinline
+            preload="auto"
+            poster="${escapeHtml(posterSrc)}"
+            aria-hidden="true"
+          ></video>
+          <div class="cinema-opening-ambient-tint" aria-hidden="true"></div>
 
-            <div class="cinema-phone-device zoom-dolly">
-              <div class="cinema-phone-screen-slider" id="openingPhoneSlider">
-                <img src="${escapeHtml(assets.phoneScreenCampaigns)}" alt="AppGreen Campaigns Screen" class="active-screen" />
-                <img src="${escapeHtml(assets.phoneScreenMarket)}" alt="AppGreen Market Screen" />
-                <img src="${escapeHtml(assets.phoneScreenServices)}" alt="AppGreen Services Screen" />
-              </div>
-            </div>
+          <div class="cinema-opening-video-frame">
+            <video
+              id="cinemaOpeningVideo"
+              class="cinema-opening-video-main"
+              src="${escapeHtml(videoSrc)}"
+              playsinline
+              preload="auto"
+              poster="${escapeHtml(posterSrc)}"
+            ></video>
           </div>
+          <div class="cinema-vignette-overlay"></div>
         </div>
 
-        <!-- SCENE 2: Daytime Agricultural Drone Spraying Crops & Trees -->
+        <!-- SCENE 2: Reforestation Campaigns & Interactive Algeria Map Overlay -->
         <div class="cinema-scene-layer ${activeIdx === 1 ? "active" : ""}" data-scene-layer="1">
-          <img src="${escapeHtml(assets.dayDrone)}" alt="Daytime Agricultural Drone" class="cinema-bg-plate pan-zoom-in" />
-          <div class="cinema-mist-layer"></div>
-          <div class="cinema-vignette-overlay"></div>
-        </div>
-
-        <!-- SCENE 3: Nighttime Agricultural Drone Operations with LED Beams -->
-        <div class="cinema-scene-layer ${activeIdx === 2 ? "active" : ""}" data-scene-layer="2">
-          <img src="${escapeHtml(assets.nightDrone)}" alt="Nighttime Agricultural Drone" class="cinema-bg-plate pan-right" />
-          <div class="cinema-night-scan-line"></div>
-          <div class="cinema-vignette-overlay"></div>
-        </div>
-
-        <!-- SCENE 4: Reforestation Campaigns & Interactive Algeria Map Overlay -->
-        <div class="cinema-scene-layer ${activeIdx === 3 ? "active" : ""}" data-scene-layer="3">
           <img src="${escapeHtml(assets.aerialForest)}" alt="Aerial Green Forests" class="cinema-bg-plate pan-up" />
           <div class="cinema-vignette-overlay"></div>
           <div class="cinema-map-hologram">
@@ -346,8 +467,8 @@
           </div>
         </div>
 
-        <!-- SCENE 5: Volunteering & Seedling Contribution in the Field -->
-        <div class="cinema-scene-layer ${activeIdx === 4 ? "active" : ""}" data-scene-layer="4">
+        <!-- SCENE 3: Volunteering & Seedling Contribution in the Field -->
+        <div class="cinema-scene-layer ${activeIdx === 2 ? "active" : ""}" data-scene-layer="2">
           <img src="${escapeHtml(assets.volunteersPlanting)}" alt="Volunteers Planting Trees" class="cinema-bg-plate pan-zoom-in" />
           <div class="cinema-vignette-overlay"></div>
           <div class="cinema-volunteer-overlay">
@@ -368,8 +489,8 @@
           </div>
         </div>
 
-        <!-- SCENE 6: Grand Finale (Phone + Logo + «معًا نحو جزائر أكثر خضرة» + «اكتشف AppGreen») -->
-        <div class="cinema-scene-layer ${activeIdx === 5 ? "active" : ""}" data-scene-layer="5">
+        <!-- SCENE 4: Grand Finale (Phone + Logo + «معًا نحو جزائر أكثر خضرة» + «اكتشف AppGreen») -->
+        <div class="cinema-scene-layer ${activeIdx === 3 ? "active" : ""}" data-scene-layer="3">
           <div class="cinema-opening-bg"></div>
           <div class="cinema-grid-mesh"></div>
           <div class="cinema-center-stage">
@@ -424,6 +545,15 @@
           <button type="button" class="video-ctrl-btn" id="videoReplayBtn" title="${escapeHtml(vs.btnReplay || "")}">
             <span>↺ ${escapeHtml(vs.btnReplay || "")}</span>
           </button>
+          <button
+            type="button"
+            class="video-ctrl-btn"
+            id="videoCloseBtn"
+            style="display:${activeIdx === 0 && !openingVideoClosed ? "inline-flex" : "none"};border-color:rgba(248,113,113,0.5);"
+            title="${escapeHtml(vs.btnCloseVideo || "إغلاق الفيديو")}"
+          >
+            <span>✕ ${escapeHtml(vs.btnCloseVideo || "إغلاق الفيديو")}</span>
+          </button>
         </div>
       </div>
 
@@ -443,7 +573,7 @@
       </div>
     `;
 
-    // Render Continuous Timeline Scrubber & 6 Chapter Pills
+    // Render Continuous Timeline Scrubber & 4 Chapter Pills
     if (scenesGrid && scenes.length > 0) {
       const progressPct = Math.min(100, (cinemaElapsedMs / totalDurationMs) * 100);
       scenesGrid.innerHTML = `
@@ -471,14 +601,21 @@
       scenesGrid.querySelectorAll(".cinema-chapter-pill").forEach((btn) => {
         btn.addEventListener("click", () => {
           const idx = parseInt(btn.getAttribute("data-scene-idx"), 10) || 0;
-          cinemaElapsedMs = idx * sceneDurationMs;
+          if (idx === 0) {
+            openingVideoClosed = false;
+            cinemaIsMuted = false;
+          }
+          const targetItem = items[idx] || items[0];
+          cinemaElapsedMs = targetItem ? targetItem.startMs : 0;
+          const prevIdx = currentVideoSceneIndex;
           currentVideoSceneIndex = idx;
-          updateCinemaActiveFrame(TRANSLATIONS[currentLang]);
+          updateSoundControlUI();
+          updateCinemaActiveFrame(TRANSLATIONS[currentLang], idx === 0 && (prevIdx !== 0 || !openingVideoClosed));
         });
       });
     }
 
-    // Render Transparent Animated Experience Disclosure Bar
+    // Render Disclosure Bar
     if (specBanner) {
       specBanner.style.display = "flex";
       specBanner.innerHTML = `
@@ -496,24 +633,34 @@
     const soundBtn = document.getElementById("videoSoundToggleBtn");
     const playBtn = document.getElementById("videoPlayToggleBtn");
     const replayBtn = document.getElementById("videoReplayBtn");
+    const closeBtn = document.getElementById("videoCloseBtn");
+    const openingVideoEl = document.getElementById("cinemaOpeningVideo");
+
+    if (openingVideoEl) {
+      openingVideoEl.addEventListener("click", () => {
+        toggleCinemaAudio(cinemaIsMuted);
+      });
+      openingVideoEl.addEventListener("ended", () => {
+        closeOpeningVideoOnEnd();
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        closeOpeningVideoOnEnd();
+      });
+    }
 
     if (soundBtn) {
       soundBtn.addEventListener("click", () => {
         toggleCinemaAudio(cinemaIsMuted);
-        const currVs = TRANSLATIONS[currentLang].videoShowcase;
-        soundBtn.innerHTML = `
-          ${cinemaIsMuted ? ICONS.volumeMuted : ICONS.volumeOn}
-          <span id="videoSoundToggleText">${escapeHtml(cinemaIsMuted ? currVs.btnUnmute : currVs.btnMute)}</span>
-        `;
       });
     }
 
     if (playBtn) {
       playBtn.addEventListener("click", () => {
         cinemaIsPlaying = !cinemaIsPlaying;
-        if (!cinemaIsPlaying && !cinemaIsMuted) {
-          toggleCinemaAudio(false);
-        }
+        syncOpeningVideoPlayback(false);
         const currVs = TRANSLATIONS[currentLang].videoShowcase;
         playBtn.innerHTML = `
           ${cinemaIsPlaying ? ICONS.pause : ICONS.play}
@@ -524,26 +671,26 @@
 
     if (replayBtn) {
       replayBtn.addEventListener("click", () => {
+        openingVideoClosed = false;
         cinemaElapsedMs = 0;
         cinemaIsPlaying = true;
-        updateCinemaActiveFrame(TRANSLATIONS[currentLang]);
+        cinemaIsMuted = false;
+        updateSoundControlUI();
+        updateCinemaActiveFrame(TRANSLATIONS[currentLang], true);
       });
     }
 
+    syncOpeningVideoPlayback(true);
     startCinemaEngine();
     attachCinemaViewportObserver(stageContainer);
   }
 
-  function updateCinemaActiveFrame(dict) {
+  function updateCinemaActiveFrame(dict, forceVideoReset) {
     if (!dict || !dict.videoShowcase) return;
     const vs = dict.videoShowcase;
     const scenes = Array.isArray(vs.scenes) ? vs.scenes : [];
-    const sceneCount = scenes.length || 6;
-    const sceneDurationMs = ((CONFIG.promoVideo && CONFIG.promoVideo.sceneDurationSeconds) || 7) * 1000;
-    const totalDurationMs = sceneCount * sceneDurationMs;
-
-    const activeIdx = Math.min(sceneCount - 1, Math.floor(cinemaElapsedMs / sceneDurationMs));
-    const activeScene = scenes[activeIdx] || scenes[0] || {};
+    const prevSceneIdx = currentVideoSceneIndex;
+    const { activeIdx, activeScene, totalDurationMs } = getActiveSceneFromElapsed(scenes, cinemaElapsedMs);
     currentVideoSceneIndex = activeIdx;
 
     const stageContainer = document.getElementById("videoStageFrame");
@@ -551,21 +698,13 @@
       stageContainer.setAttribute("data-active-scene", activeScene.id || "opening");
       stageContainer.querySelectorAll(".cinema-scene-layer").forEach((layer) => {
         const layerIdx = parseInt(layer.getAttribute("data-scene-layer"), 10);
-        layer.classList.toggle("active", layerIdx === activeIdx);
+        const isActiveLayer = layerIdx === activeIdx && !(layerIdx === 0 && openingVideoClosed);
+        layer.classList.toggle("active", isActiveLayer);
       });
-
-      // Cycle the 3 real AppGreen screens inside the Scene 1 smartphone every 2.3s
-      if (activeIdx === 0) {
-        const slider = document.getElementById("openingPhoneSlider");
-        if (slider) {
-          const imgs = slider.querySelectorAll("img");
-          if (imgs.length > 0) {
-            const subIdx = Math.floor((cinemaElapsedMs % sceneDurationMs) / 2300) % imgs.length;
-            imgs.forEach((img, i) => img.classList.toggle("active-screen", i === subIdx));
-          }
-        }
-      }
     }
+
+    const enteredOpening = forceVideoReset || (activeIdx === 0 && prevSceneIdx !== 0);
+    syncOpeningVideoPlayback(enteredOpening);
 
     const badgeEl = document.getElementById("cinemaHudBadgeText");
     if (badgeEl) badgeEl.textContent = activeScene.badge || "";
@@ -609,12 +748,35 @@
       if (!cinemaIsPlaying || !cinemaInViewport) return;
       const dict = TRANSLATIONS[currentLang];
       if (!dict || !dict.videoShowcase) return;
-      const sceneCount = (dict.videoShowcase.scenes && dict.videoShowcase.scenes.length) || 6;
-      const sceneDurationMs = ((CONFIG.promoVideo && CONFIG.promoVideo.sceneDurationSeconds) || 7) * 1000;
-      const totalDurationMs = sceneCount * sceneDurationMs;
+      const scenes = dict.videoShowcase.scenes || [];
+      const { items, totalDurationMs } = getCinemaSceneTimings(scenes);
 
-      cinemaElapsedMs = (cinemaElapsedMs + stepMs) % totalDurationMs;
-      updateCinemaActiveFrame(dict);
+      // While Scene 1 (app.mp4) is playing, sync elapsed time to the video's real playback time
+      // and let its `ended` event close the video when it finishes.
+      if (currentVideoSceneIndex === 0 && !openingVideoClosed) {
+        const openingVideo = document.getElementById("cinemaOpeningVideo");
+        if (openingVideo && !openingVideo.paused && openingVideo.duration) {
+          cinemaElapsedMs = Math.min((items[0] ? items[0].endMs - 50 : 15950), openingVideo.currentTime * 1000);
+          updateCinemaActiveFrame(dict, false);
+          return;
+        }
+      }
+
+      const nextMs = cinemaElapsedMs + stepMs;
+      if (currentVideoSceneIndex === 0 && items[0] && nextMs >= items[0].endMs) {
+        closeOpeningVideoOnEnd();
+        return;
+      }
+
+      if (nextMs >= totalDurationMs) {
+        // Once the opening video has finished and closed, loop through Scenes 2-4 without reopening the video
+        const loopStartMs = openingVideoClosed && items[1] ? items[1].startMs : 0;
+        cinemaElapsedMs = loopStartMs;
+        updateCinemaActiveFrame(dict, !openingVideoClosed);
+      } else {
+        cinemaElapsedMs = nextMs;
+        updateCinemaActiveFrame(dict, false);
+      }
     }, stepMs);
   }
 
@@ -625,9 +787,7 @@
       (entries) => {
         entries.forEach((entry) => {
           cinemaInViewport = entry.isIntersecting;
-          if (!cinemaInViewport && !cinemaIsMuted) {
-            toggleCinemaAudio(false);
-          }
+          syncOpeningVideoPlayback(false);
         });
       },
       { threshold: 0.2 }
@@ -868,6 +1028,36 @@
         )
         .join("");
     }
+
+    const aboutFieldVideo = document.getElementById("aboutFieldVideo");
+    const aboutSoundBtn = document.getElementById("aboutVideoSoundBtn");
+    if (aboutFieldVideo && aboutSoundBtn) {
+      const updateAboutSoundBtn = () => {
+        const currVs = TRANSLATIONS[currentLang].videoShowcase;
+        aboutSoundBtn.innerHTML = `
+          ${aboutFieldVideo.muted ? ICONS.volumeMuted : ICONS.volumeOn}
+          <span id="aboutVideoSoundText">${escapeHtml(aboutFieldVideo.muted ? currVs.btnUnmute : currVs.btnMute)}</span>
+        `;
+      };
+      updateAboutSoundBtn();
+
+      if (!aboutVideoBound) {
+        aboutVideoBound = true;
+        const toggleAboutAudio = () => {
+          aboutFieldVideo.volume = 1.0;
+          aboutFieldVideo.muted = !aboutFieldVideo.muted;
+          if (!aboutFieldVideo.muted) {
+            // Mute opening video if it's still playing so two audio tracks don't overlap
+            toggleCinemaAudio(false);
+            const p = aboutFieldVideo.play();
+            if (p && typeof p.catch === "function") p.catch(() => {});
+          }
+          updateAboutSoundBtn();
+        };
+        aboutSoundBtn.addEventListener("click", toggleAboutAudio);
+        aboutFieldVideo.addEventListener("click", toggleAboutAudio);
+      }
+    }
   }
 
   function renderFeaturesSection(dict) {
@@ -961,14 +1151,49 @@
     });
   }
 
+  let apkSizeDetectedOnce = false;
+
+  function detectApkFileSizeAutomatically() {
+    if (apkSizeDetectedOnce || typeof window.fetch !== "function") return;
+    const apkUrl = CONFIG.download && CONFIG.download.apkDownloadUrl;
+    if (!apkUrl) return;
+    apkSizeDetectedOnce = true;
+
+    window
+      .fetch(apkUrl, { method: "HEAD" })
+      .then((res) => {
+        if (!res || !res.ok) return;
+        const lenHeader = res.headers && res.headers.get("content-length");
+        const bytes = lenHeader ? parseInt(lenHeader, 10) : 0;
+        if (bytes > 0) {
+          const mb = (bytes / (1024 * 1024)).toFixed(2) + " MB";
+          CONFIG.app.apkFileSize = mb;
+          const specSizeValue = document.getElementById("specSizeValue");
+          if (specSizeValue) specSizeValue.textContent = mb;
+          const metaPill = document.getElementById("downloadBtnMetaPill");
+          if (metaPill) {
+            const ver = CONFIG.download.versionLabel || "v1.0.0 TEST";
+            metaPill.textContent = `${ver} • ${mb}`;
+          }
+        }
+      })
+      .catch(() => {
+        // Keep configured fallback size ("37.57 MB")
+      });
+  }
+
   function renderDownloadSection(dict) {
     const statusPill = document.getElementById("downloadStatusPill");
     const statusNotice = document.getElementById("downloadStatusNotice");
+    const unknownSourcesEl = document.getElementById("downloadUnknownSourcesNote");
     const actionWrap = document.getElementById("downloadActionsWrap");
     const specSizeValue = document.getElementById("specSizeValue");
     const stepsList = document.getElementById("downloadStepsList");
 
     const isReady = CONFIG.download.isReleasePublished && CONFIG.download.apkDownloadUrl.trim() !== "";
+    const apkFileName = CONFIG.download.apkFileName || "AppGreen-Test-v1.0.apk";
+    const versionLabel = CONFIG.download.versionLabel || "v1.0.0 TEST";
+    const sizeText = CONFIG.app.apkFileSize ? CONFIG.app.apkFileSize : dict.download.specSizePending;
 
     if (statusPill) {
       statusPill.className = `download-status-pill ${isReady ? "ready" : "pending"}`;
@@ -979,17 +1204,27 @@
       statusNotice.textContent = isReady ? dict.download.statusReadyNotice : dict.download.statusPendingNotice;
     }
 
+    if (unknownSourcesEl && dict.download.unknownSourcesNote) {
+      unknownSourcesEl.textContent = dict.download.unknownSourcesNote;
+    }
+
     if (specSizeValue) {
-      specSizeValue.textContent = CONFIG.app.apkFileSize ? CONFIG.app.apkFileSize : dict.download.specSizePending;
+      specSizeValue.textContent = sizeText;
     }
 
     if (actionWrap) {
       let html = "";
       if (isReady) {
         html += `
-          <a href="${escapeHtml(CONFIG.download.apkDownloadUrl)}" class="btn-apk-download ready" download>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <a
+            href="${escapeHtml(CONFIG.download.apkDownloadUrl)}"
+            download="${escapeHtml(apkFileName)}"
+            class="btn-apk-download ready"
+            id="directApkDownloadBtn"
+          >
+            <svg class="android-btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V9a7 7 0 0 1 14 0v7"/><line x1="8" y1="3" x2="6" y2="6"/><line x1="16" y1="3" x2="18" y2="6"/><circle cx="9.5" cy="10.5" r="0.8" fill="currentColor"/><circle cx="14.5" cy="10.5" r="0.8" fill="currentColor"/><rect x="3" y="10" width="2" height="6" rx="1"/><rect x="19" y="10" width="2" height="6" rx="1"/><path d="M7 16v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-4"/><path d="M14 16v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-4"/></svg>
             <span>${escapeHtml(dict.download.btnReadyText)}</span>
+            <span class="apk-btn-meta-pill" id="downloadBtnMetaPill">${escapeHtml(versionLabel)} • ${escapeHtml(sizeText)}</span>
           </a>
         `;
       } else {
@@ -1023,6 +1258,8 @@
         )
         .join("");
     }
+
+    detectApkFileSizeAutomatically();
   }
 
   // ==========================================================================
